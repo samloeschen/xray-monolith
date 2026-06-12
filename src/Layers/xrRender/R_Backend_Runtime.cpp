@@ -12,6 +12,9 @@
 #include "../xrRenderDX10/StateManager/dx10StateManager.h"
 #include "../xrRenderDX10/StateManager/dx10ShaderResourceStateCache.h"
 #endif	USE_DX10
+#ifdef USE_DX11
+#include "../xrRenderDX10/dx10EventWrapper.h"
+#endif
 
 void CBackend::OnFrameEnd()
 {
@@ -20,6 +23,9 @@ void CBackend::OnFrameEnd()
 	if (!g_dedicated_server)
 #endif
 	{
+#ifdef USE_DX11
+		GpuProf::OnFrameEnd();
+#endif
 #if defined(USE_DX10) || defined(USE_DX11)
 		HW.pContext->ClearState();
 		Invalidate();
@@ -52,6 +58,9 @@ void CBackend::OnFrameBegin()
 		set_RT(HW.pBaseRT);
 		set_ZB(HW.pBaseZB);
 #endif	//	USE_DX10
+#ifdef USE_DX11
+		GpuProf::OnFrameBegin();
+#endif
 		Memory.mem_fill(&stat, 0, sizeof(stat));
 		Vertex.Flush();
 		Index.Flush();
@@ -457,9 +466,61 @@ void CBackend::set_Textures(STextureList* _T)
 #endif
 #endif	//	USE_DX10
 }
+
+#if defined(USE_DX10) || defined(USE_DX11)
+void CBackend::unbind_texture(CTexture* tex)
+{
+	if (!tex) return;
+
+	for (u32 i = 0; i < mtMaxPixelShaderTextures; ++i)
+		if (textures_ps[i] == tex)
+		{
+			textures_ps[i] = 0;
+			SRVSManager.SetPSResource(i, 0);
+		}
+	for (u32 i = 0; i < mtMaxVertexShaderTextures; ++i)
+		if (textures_vs[i] == tex)
+		{
+			textures_vs[i] = 0;
+			SRVSManager.SetVSResource(i, 0);
+		}
+	for (u32 i = 0; i < mtMaxGeometryShaderTextures; ++i)
+		if (textures_gs[i] == tex)
+		{
+			textures_gs[i] = 0;
+			SRVSManager.SetGSResource(i, 0);
+		}
+#ifdef USE_DX11
+	for (u32 i = 0; i < mtMaxHullShaderTextures; ++i)
+		if (textures_hs[i] == tex)
+		{
+			textures_hs[i] = 0;
+			SRVSManager.SetHSResource(i, 0);
+		}
+	for (u32 i = 0; i < mtMaxDomainShaderTextures; ++i)
+		if (textures_ds[i] == tex)
+		{
+			textures_ds[i] = 0;
+			SRVSManager.SetDSResource(i, 0);
+		}
+	for (u32 i = 0; i < mtMaxComputeShaderTextures; ++i)
+		if (textures_cs[i] == tex)
+		{
+			textures_cs[i] = 0;
+			SRVSManager.SetCSResource(i, 0);
+		}
+#endif
+
+	//	Force the next set_Textures to re-walk even an identical list.
+	T = 0;
+}
+#endif	//	USE_DX10/11
 #else
 
 void	CBackend::set_ClipPlanes	(u32 _enable, Fmatrix*	_xform  /*=NULL */, u32 fmask/* =0xff */) {}
 void CBackend::set_Textures			(STextureList* _T) {}
+#if defined(USE_DX10) || defined(USE_DX11)
+void CBackend::unbind_texture(CTexture* tex) {}
+#endif
 
 #endif

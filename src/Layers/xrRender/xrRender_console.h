@@ -239,6 +239,8 @@ extern ECORE_API float ps_r4_hdr10_brightness;			 // r4-only
 extern ECORE_API float ps_r4_hdr10_gamma;				 // r4-only
 extern ECORE_API float ps_r4_hdr10_ui_saturation;		 // r4-only
 
+extern ECORE_API int   ps_r4_gpu_prof;				  // r4-only: per-phase GPU timing dump to log
+
 extern ECORE_API int   ps_r4_hdr10_bloom_on;		  // r4-only
 extern ECORE_API int   ps_r4_hdr10_bloom_blur_passes; // r4-only
 extern ECORE_API float ps_r4_hdr10_bloom_blur_scale;       // r4-only

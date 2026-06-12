@@ -17,6 +17,11 @@ public:
 	void reset_begin();
 	void reset_end();
 	IC BOOL valid() { return !!pTexture; }
+#if defined(USE_DX10) || defined(USE_DX11)
+
+    // swaps the pointers of the two CTExtures, only does this if they're identical
+	BOOL swap_surfaces(CRT& other);
+#endif
 
 public:
 	ID3DTexture2D* pSurface;
@@ -49,6 +54,12 @@ struct resptrcode_crt : public resptr_base<CRT>
 };
 
 typedef resptr_core<CRT, resptrcode_crt> ref_rt;
+
+#if defined(USE_DX10) || defined(USE_DX11)
+
+// mechanism for ping-ponging render targets instead of the old render->CopyResource style
+void u_swap_rt(ref_rt& dst, ref_rt& src);
+#endif
 
 /*	//	DX10 cut 
 //////////////////////////////////////////////////////////////////////////

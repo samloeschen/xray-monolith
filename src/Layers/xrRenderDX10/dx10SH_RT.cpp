@@ -208,6 +208,46 @@ void CRT::destroy()
 #endif
 }
 
+BOOL CRT::swap_surfaces(CRT& other)
+{
+	if (!pSurface || !other.pSurface || !pRT || !other.pRT)
+		return FALSE;
+
+	D3D_TEXTURE2D_DESC d0, d1;
+	pSurface->GetDesc(&d0);
+	other.pSurface->GetDesc(&d1);
+	if (d0.Width != d1.Width || d0.Height != d1.Height || d0.Format != d1.Format ||
+		d0.SampleDesc.Count != d1.SampleDesc.Count || d0.BindFlags != d1.BindFlags)
+		return FALSE;
+
+	std::swap(pSurface, other.pSurface);
+	std::swap(pRT, other.pRT);
+	std::swap(pZRT, other.pZRT);
+#ifdef USE_DX11
+	std::swap(pUAView, other.pUAView);
+#endif
+
+	pTexture->surface_set(pSurface);
+	other.pTexture->surface_set(other.pSurface);
+
+    //  at this point we've swapped the CTexture pointers but not the SRVs.
+    //  we need to invalidate the bindings so that stale views get rebound
+	RCache.unbind_texture(pTexture._get());
+	RCache.unbind_texture(other.pTexture._get());
+
+	return TRUE;
+}
+
+void u_swap_rt(ref_rt& dst, ref_rt& src)
+{
+	CRT* d = dst._get();
+	CRT* s = src._get();
+	if (!d || !s || d == s)
+		return;
+	if (!d->swap_surfaces(*s))
+		HW.pContext->CopyResource(d->pSurface, s->pSurface);
+}
+
 void CRT::reset_begin()
 {
 	destroy();
