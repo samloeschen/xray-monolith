@@ -2,6 +2,7 @@
 
 void CRenderTarget::phase_nightvision()
 {
+	PIX_EVENT(phase_nightvision);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -46,9 +47,9 @@ void CRenderTarget::phase_nightvision()
 	//Set geometry
 	RCache.set_Geometry(g_combine);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
-	
+
 #if defined(USE_DX10) || defined(USE_DX11)
-	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
+	u_swap_rt(rt_Generic_0, dest_rt);
 #endif
 };
 
@@ -56,6 +57,7 @@ void CRenderTarget::phase_nightvision()
 //crookr
 void CRenderTarget::phase_fakescope()
 {
+	PIX_EVENT(phase_fakescope);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -98,7 +100,7 @@ void CRenderTarget::phase_fakescope()
 	RCache.set_Geometry(g_combine);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
+	u_swap_rt(rt_Generic_0, dest_rt);
 #else
 	//Main pass (we avoid write-read from the same buffer)
 	u_setrt(rt_Generic_PingPong, nullptr, nullptr, nullptr);
@@ -147,6 +149,7 @@ void CRenderTarget::phase_fakescope()
 //--DSR-- HeatVision_start
 void CRenderTarget::phase_heatvision()
 {
+	PIX_EVENT(phase_heatvision);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -193,7 +196,7 @@ void CRenderTarget::phase_heatvision()
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
 #if defined(USE_DX10) || defined(USE_DX11)
-	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
+	u_swap_rt(rt_Generic_0, dest_rt);
 #endif
 };
 //--DSR-- HeatVision_start

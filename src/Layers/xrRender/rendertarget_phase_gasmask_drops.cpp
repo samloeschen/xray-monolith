@@ -20,6 +20,8 @@ void CRenderTarget::phase_gasmask_drops()
 	p1.set((w + 0.5f) / w, (h + 0.5f) / h);
 #endif
 	
+	PIX_EVENT(phase_gasmask_drops);
+
 	//////////////////////////////////////////////////////////////////////////
 	//Set MSAA/NonMSAA rendertarget
 #if defined(USE_DX10) || defined(USE_DX11)
@@ -52,6 +54,6 @@ void CRenderTarget::phase_gasmask_drops()
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	
 #if defined(USE_DX10) || defined(USE_DX11)
-	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
+	u_swap_rt(rt_Generic_0, dest_rt);
 #endif
 };

@@ -8,6 +8,7 @@ IC bool SortLights(light* i, light* j)
 
 void CRenderTarget::phase_blur()
 {
+	PIX_EVENT(phase_blur);
 	//Get common data
 	u32 Offset = 0;
 	float d_Z = EPS_S;
@@ -187,6 +188,7 @@ void CRenderTarget::phase_blur()
 
 void CRenderTarget::phase_ssfx_ssr()
 {
+	PIX_EVENT(phase_ssfx_ssr);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -196,7 +198,10 @@ void CRenderTarget::phase_ssfx_ssr()
 	float w = float(Device.dwWidth);
 	float h = float(Device.dwHeight);
 
-	float ScaleFactor = std::min(std::max(ps_ssfx_ssr.x, 1.0f), 2.0f);
+	float ScaleFactor = std::min(std::max(ps_ssfx_ssr.x, 1.0f), 8.0f);
+
+	Fvector4 ssr_setup = ps_ssfx_ssr;
+	ssr_setup.x = ScaleFactor;
 
 	Fvector2 p0, p1;
 	p0.set(0.0f, 0.0f);
@@ -250,7 +255,7 @@ void CRenderTarget::phase_ssfx_ssr()
 	RCache.set_c("m_previous", Matrix_previous);
 	RCache.set_c("cam_pos", ::Random.randF(-1.0, 1.0), ::Random.randF(-1.0, 1.0), 0.0f, 0.0f);
 
-	RCache.set_c("ssr_setup", ps_ssfx_ssr);
+	RCache.set_c("ssr_setup", ssr_setup);
 	RCache.set_Geometry(g_combine);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
@@ -276,7 +281,7 @@ void CRenderTarget::phase_ssfx_ssr()
 		// Draw COLOR
 		RCache.set_Element(s_ssfx_ssr->E[1]);
 		RCache.set_c("blur_params", 1.0, 0.0, scale_X, scale_Y);
-		RCache.set_c("ssr_setup", ps_ssfx_ssr);
+		RCache.set_c("ssr_setup", ssr_setup);
 		RCache.set_Geometry(g_combine);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
@@ -297,7 +302,7 @@ void CRenderTarget::phase_ssfx_ssr()
 		// Draw COLOR
 		RCache.set_Element(s_ssfx_ssr->E[2]);
 		RCache.set_c("blur_params", 0.0, 1.0, w, h);
-		RCache.set_c("ssr_setup", ps_ssfx_ssr);
+		RCache.set_c("ssr_setup", ssr_setup);
 		RCache.set_Geometry(g_combine);
 		RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 	}
@@ -327,13 +332,14 @@ void CRenderTarget::phase_ssfx_ssr()
 
 	// Draw COLOR
 	RCache.set_Element(s_ssfx_ssr->E[3]);
-	RCache.set_c("ssr_setup", ps_ssfx_ssr);
+	RCache.set_c("ssr_setup", ssr_setup);
 	RCache.set_Geometry(g_combine);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 };
 
 void CRenderTarget::phase_ssfx_volumetric_blur()
 {
+	PIX_EVENT(phase_ssfx_volumetric_blur);
 
 	// Be careful and clear the buffer ( rt_Generic_2 contain unspeakable stuff if no volumetric is written )
 	if (!m_bHasActiveVolumetric)
@@ -416,6 +422,7 @@ void CRenderTarget::phase_ssfx_volumetric_blur()
 
 void CRenderTarget::phase_ssfx_water_blur()
 {
+	PIX_EVENT(phase_ssfx_water_blur);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -502,6 +509,7 @@ void CRenderTarget::phase_ssfx_water_blur()
 
 void CRenderTarget::phase_ssfx_water_waves()
 {
+	PIX_EVENT(phase_ssfx_water_waves);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -541,6 +549,7 @@ void CRenderTarget::phase_ssfx_water_waves()
 
 void CRenderTarget::phase_ssfx_sss()
 {
+	PIX_EVENT(phase_ssfx_sss);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(255, 255, 255, 255);
@@ -630,6 +639,7 @@ void CRenderTarget::phase_ssfx_sss()
 
 void CRenderTarget::phase_ssfx_sss_ext(light_Package& LP)
 {
+	PIX_EVENT(phase_ssfx_sss_ext);
 	static shared_str strLights("lights_data");
 	static light* LightSlot[8];
 	static u32 sss_currentframe;
@@ -896,6 +906,7 @@ void CRenderTarget::phase_ssfx_sss_ext(light_Package& LP)
 
 void CRenderTarget::phase_ssfx_fog_scattering()
 {
+	PIX_EVENT(phase_ssfx_fog_scattering);
 	u32 Offset = 0;
 	Fvector2 p0, p1;
 
@@ -959,12 +970,13 @@ void CRenderTarget::phase_ssfx_fog_scattering()
 
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
+	u_swap_rt(rt_Generic_0, dest_rt);
 
 }
 
 void CRenderTarget::phase_ssfx_motion_blur()
 {
+	PIX_EVENT(phase_ssfx_motion_blur);
 	u32 Offset = 0;
 	Fvector2 p0, p1;
 
@@ -998,7 +1010,7 @@ void CRenderTarget::phase_ssfx_motion_blur()
 	RCache.set_Geometry(g_combine);
 	RCache.Render(D3DPT_TRIANGLELIST, Offset, 0, 4, 0, 2);
 
-	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
+	u_swap_rt(rt_Generic_0, dest_rt);
 }
 
 #endif

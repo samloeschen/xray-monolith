@@ -1854,6 +1854,16 @@ HRESULT CRender::shader_compile(
 	xr_strcat(sh_name, c_ssfx_sss_omni_quality);
 	len += xr_strlen(c_ssfx_sss_omni_quality);
 
+	//  scaled AO blur (see phase_ssfx_ao)
+    //  I was having some problems where it would revert to the stock blur shaders,
+    //  so this bump bumps the shader cache key so those won't get reused on accident
+	
+	defines[def_it].Name = "SSFX_AO_SCALED_BLUR";
+	defines[def_it].Definition = "1";
+	def_it++;
+	sh_name[len] = '1';
+	++len;
+
 	defines[def_it].Name = "SSFX_MODEXE";
 	defines[def_it].Definition = "1";
 	def_it++;

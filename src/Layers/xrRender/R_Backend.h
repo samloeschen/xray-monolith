@@ -274,6 +274,12 @@ public:
 	void set_Textures(STextureList* T);
 	IC void set_Textures(ref_texture_list& T) { set_Textures(&*T); }
 
+#if defined(USE_DX10) || defined(USE_DX11)
+	//	drops cached stage bindings of a texture whose underlying surface/SRV
+	//	changed (see CRT::swap_surfaces) and unbinds it from all shader stages
+	void unbind_texture(CTexture* tex);
+#endif
+
 #ifdef _EDITOR
 	IC	void						set_Matrices		(SMatrixList* M);
 	IC	void						set_Matrices		(ref_matrix_list& M)				{ set_Matrices(&*M);			}

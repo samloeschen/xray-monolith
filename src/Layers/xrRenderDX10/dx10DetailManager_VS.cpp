@@ -273,7 +273,7 @@ void CDetailManager::hw_Render_dump(const Fvector4& consts, const Fvector4& wave
 	static shared_str strFadeParams("dt_fade_params");
 
 	u32 total = 0;
-	for (u32 obj = 0; obj < objects.size(); obj++) {
+	for (u32 obj = 0; obj < objects.size(); obj++)
 		total += hw_inst_count[var_id][obj];
 	if (total == 0)
 		return;

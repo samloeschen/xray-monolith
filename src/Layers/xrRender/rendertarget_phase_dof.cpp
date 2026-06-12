@@ -2,6 +2,7 @@
 
 void CRenderTarget::phase_dof()
 {
+	PIX_EVENT(phase_dof);
 	//Constants
 	u32 Offset = 0;
 	u32 C = color_rgba(0, 0, 0, 255);
@@ -81,6 +82,6 @@ void CRenderTarget::phase_dof()
 
 	//Resolve RT
 #if defined(USE_DX10) || defined(USE_DX11)
-	HW.pContext->CopyResource(rt_Generic_0->pTexture->surface_get(), dest_rt->pTexture->surface_get());
+	u_swap_rt(rt_Generic_0, dest_rt);
 #endif
 };
