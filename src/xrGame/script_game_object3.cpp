@@ -27,6 +27,7 @@
 #include "visual_memory_manager.h"
 #include "sound_memory_manager.h"
 #include "hit_memory_manager.h"
+#include "EntityCondition.h"
 #include "sight_manager.h"
 #include "stalker_movement_manager_smart_cover.h"
 #include "smart_cover.h"
@@ -148,6 +149,36 @@ void CScriptGameObject::SetVisualMemoryEnabled(bool enabled)
 		                                make_string("CCustomMonster[%s]: cannot access class member ChangeTeam!", object().cNameSect().c_str()).c_str());
 	else
 		custom_monster->memory().visual().enable(enabled);
+}
+
+void CScriptGameObject::set_vision_speed(float value)
+{
+	CCustomMonster* custom_monster = smart_cast<CCustomMonster*>(&object());
+	if (!custom_monster)
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+		                                "CCustomMonster : cannot access class member set_vision_speed!");
+	else
+		custom_monster->memory().visual().set_vision_speed(value);
+}
+
+void CScriptGameObject::set_view_distance_factor(float value)
+{
+	CCustomMonster* custom_monster = smart_cast<CCustomMonster*>(&object());
+	if (!custom_monster)
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+		                                "CCustomMonster : cannot access class member set_view_distance_factor!");
+	else
+		custom_monster->memory().visual().set_view_distance_factor(value);
+}
+
+void CScriptGameObject::set_health_restore_boost(float value)
+{
+	CEntityAlive* entity_alive = smart_cast<CEntityAlive*>(&object());
+	if (!entity_alive)
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+		                                "CEntityAlive : cannot access class member set_health_restore_boost!");
+	else
+		entity_alive->conditions().set_health_restore_boost(value);
 }
 
 float CScriptGameObject::GetObjectVisibleDistance(const CScriptGameObject* obj)
@@ -1538,6 +1569,28 @@ bool CScriptGameObject::is_weapon_going_to_be_strapped(CScriptGameObject const* 
 	return stalker->is_weapon_going_to_be_strapped(&object->object());
 }
 
+::luabind::object CScriptGameObject::g_fireParams()
+{
+    ::luabind::object lua_table = ::luabind::newtable(ai().script_engine().lua());
+    Fvector pos, dir;
+    if (object().cast_actor())
+    {
+        object().cast_actor()->g_fireParams(nullptr, pos, dir);
+        lua_table["pos"] = pos;
+        lua_table["dir"] = dir;
+        return lua_table;
+    }
+    if (object().cast_stalker())
+    {
+        object().cast_stalker()->g_fireParams(nullptr, pos, dir);
+        lua_table["pos"] = pos;
+        lua_table["dir"] = dir;
+        return lua_table;
+    }
+    ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError, "CGameObject : object invalid.");
+    return lua_table;
+}
+
 //Alundaio:
 #ifdef GAME_OBJECT_EXTENDED_EXPORTS
 u16 CScriptGameObject::AmmoGetCount()
@@ -2139,6 +2192,17 @@ void CScriptGameObject::set_enable_anomalies_damage(bool v)
 		return;
 	}
 	stalker->m_enable_anomalies_damage = v;
+}
+bool CScriptGameObject::inside_anomaly()
+{
+	auto stalker = smart_cast<CAI_Stalker*>(&object());
+	if (!stalker)
+	{
+		ai().script_engine().script_log(ScriptStorage::eLuaMessageTypeError,
+			"CGameObject : cannot call inside_anomaly (not a CAI_Stalker)!");
+		return false;
+	}
+	return stalker->inside_anomaly();
 }
 #endif
 //-Alundaio

@@ -315,7 +315,7 @@ float CVisualMemoryManager::object_visible_distance(const CGameObject* game_obje
 
 	float distance = (1.f - alpha / fov) * (max_view_distance - min_view_distance) + min_view_distance;
 
-	return (distance);
+	return (distance * m_view_distance_factor);
 }
 
 float CVisualMemoryManager::object_luminocity(const CGameObject* game_object) const
@@ -365,7 +365,7 @@ float CVisualMemoryManager::get_visible_value(const CGameObject* game_object, fl
 	if (ai().script_engine().functor("visual_memory_manager.get_visible_value", funct))
 		return (funct(m_object ? m_object->lua_game_object() : 0, game_object ? game_object->lua_game_object() : 0,
 		              time_delta, current_state().m_time_quant, luminocity, current_state().m_velocity_factor,
-		              object_velocity, distance, object_distance, always_visible_distance)) * g_ai_vision_speed_boost;
+		              object_velocity, distance, object_distance, always_visible_distance)) * g_ai_vision_speed_boost * m_vision_speed;
 	//-Alundaio
 
 	return (
@@ -375,7 +375,7 @@ float CVisualMemoryManager::get_visible_value(const CGameObject* game_object, fl
 		(1.f + current_state().m_velocity_factor * object_velocity) *
 		(distance - object_distance) /
 		(distance - always_visible_distance)
-	) * g_ai_vision_speed_boost;
+	) * g_ai_vision_speed_boost * m_vision_speed;
 }
 
 CNotYetVisibleObject* CVisualMemoryManager::not_yet_visible_object(const CGameObject* game_object)

@@ -385,6 +385,12 @@ enum
 // demonized:
 extern ECORE_API BOOL occq_debug;
 
+// Texture eviction system
+extern ECORE_API int ps_r__tex_evict_enabled;
+extern ECORE_API int ps_r__tex_evict_age_frames;
+extern ECORE_API int ps_r__tex_evict_batch_size;
+extern ECORE_API int ps_r__tex_evict_interval;
+
 extern void xrRender_initconsole();
 extern BOOL xrRender_test_hw();
 

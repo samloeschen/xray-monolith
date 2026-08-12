@@ -235,6 +235,87 @@ How to compile exes:
 13. A short video demonstration of the entire process: https://youtu.be/MmZwyM2QO38
 
 ## Changelog
+**2026.08.09**
+* Main and MT:
+  * Expose AttachChild without the adopt policy (so lua windows can be attached to engine windows), fix https://github.com/themrdemonized/xray-monolith/issues/624
+  * [Feature Request] Expose scroll hooks in CUIScrollView/CUIScrollBar, fix https://github.com/themrdemonized/xray-monolith/issues/621
+  * damiansirbu:
+    * per-NPC view-distance factor setter (https://github.com/themrdemonized/xray-monolith/pull/627)
+    * per-NPC passive health-restore boost setter (https://github.com/themrdemonized/xray-monolith/pull/628)
+    * `npc:is_hit_anim_playing hit-flinch` reader (https://github.com/themrdemonized/xray-monolith/pull/629)
+  * lulnope: Expose script control on whether to activate item on move_to_slot or not (https://github.com/themrdemonized/xray-monolith/pull/631)
+
+* MT:
+  * Fix SSS Bloom affecting HUD elements
+
+**2026.07.31**
+* Main and MT:
+  * Fix issue https://github.com/themrdemonized/xray-monolith/issues/622
+  * Possibility to add new mountable scopes to weapons via upgrades
+  * erepb: dynamic PDA tab support (https://github.com/themrdemonized/xray-monolith/pull/608) (https://github.com/themrdemonized/xray-monolith/pull/609)
+
+**2026.07.22**
+* Main and MT:
+  * fix non working `on_loading_screen_dismissed` callback when `keypress_on_start 0`
+  * fixed missing fields in `ammo_base` mentioned in https://github.com/themrdemonized/xray-monolith/pull/612
+  * Bookshelf9854: replace level.iterate_nearest with pre-filtered monsters registry in anomaly_restrictor_update (https://github.com/themrdemonized/xray-monolith/pull/605)
+  * damiansirbu:
+    * Cover re-pick veto callback (npc_on_best_cover_repick) (https://github.com/themrdemonized/xray-monolith/pull/607)
+    * NPC weapon reload event callbacks (npc_on_weapon_reload_start/stop) (https://github.com/themrdemonized/xray-monolith/pull/611)
+    * Bind make_enemy_visible (force seen-class enemy memory for stalkers)  (https://github.com/themrdemonized/xray-monolith/pull/613)
+  * emgComplex: feat(HudItem):lua binding for toggle fl_inertion_enable (https://github.com/themrdemonized/xray-monolith/pull/619)
+  * GhenTuong: Add an option "bullet_check_visual" in object section to validate bullet hit. (https://github.com/themrdemonized/xray-monolith/pull/620)
+
+* MT:
+  * Possible crash fix on level change in LocatorAPI
+  * noisethanks: Address a race condition with reloading evicted textures by using texture_load_tasks PPL group. (https://github.com/themrdemonized/xray-monolith/pull/604)
+
+**2026.07.13**
+* Main and MT:
+  * erepb: fix: replay spot add-properties at click... (https://github.com/themrdemonized/xray-monolith/pull/598)
+  * Verdatim25: Add new Cvar pseudogiant_dodge_stomp_while_falling (https://github.com/themrdemonized/xray-monolith/pull/599)
+  * GhenTuong: CCar development. Drone, Visual camera, Camera Scope (https://github.com/themrdemonized/xray-monolith/pull/600)
+  * damiansirbu: feat(ai): per-NPC fire queue scale setter (https://github.com/themrdemonized/xray-monolith/pull/603)
+
+**2026.07.06**
+* Main and MT:
+  * Fix `CPatrolPoint::load_from_config` not working properly
+  * erepb:
+    * feat: PDA context menu from multiple spots (https://github.com/themrdemonized/xray-monolith/pull/585)
+    * feat: add submenu support to PDA context menu (https://github.com/themrdemonized/xray-monolith/pull/591)
+  * damiansirbu:
+    * feat(ai): per-NPC aim params and vision speed setters (https://github.com/themrdemonized/xray-monolith/pull/594)
+    * feat(ai): combat action-switch veto callback (npc_on_combat_action_switch) (https://github.com/themrdemonized/xray-monolith/pull/595)
+    * feat(ai): bind can_kill_enemy/member and fire_make_sense fire gates (https://github.com/themrdemonized/xray-monolith/pull/596)
+
+MT:
+  * address crash `burer_state_attack_inline.h (89): CStateBurerAttack<CBurer>::execute`
+  * Don't clear ui and `$user` textures on `r__clear_resources_on_unload`
+  * Leyths: alife: guard against `_SPAWN_ID(-1)` in spawn graph traversal (https://github.com/themrdemonized/xray-monolith/pull/590)
+  * noisethanks: feat(renderer): mid-session texture eviction system (https://github.com/themrdemonized/xray-monolith/pull/592)
+
+**2026.06.28**
+* Main and MT:
+  * Less verbose logging on mismatched shader cache
+  * GhenTuong: Export CScriptGameObject and CWeapon (https://github.com/themrdemonized/xray-monolith/pull/584)
+  * antglobes: Numpad Support for Console (https://github.com/themrdemonized/xray-monolith/pull/583)
+  * erepb: Normalize map spot sizes for army and ecolog factions (https://github.com/themrdemonized/xray-monolith/pull/582)
+
+**2026.06.21**
+* Main and MT:
+  * New Lua exports to get/set hud fire bone/pos(silencer)
+  * Possibility to change new fields with upgrades:
+fire_point, fire_point2, fire_point_silencer, hud_fire_point, hud_fire_point2, hud_fire_point_silencer
+  * `motion_mark_reload` ltx to Specify motion mark to trigger reload logic, when empty or unspecified uses any motion mark like vanilla code
+  * shader cache: Automatic shader cache invalidation, no need to clean it manually. It checks and saves source CRC, if after changes CRC dont match, shader will be recompiled, inspired by openxray
+  * Priler: infinite/super long bolts throwing issue workaround (https://github.com/themrdemonized/xray-monolith/pull/575)
+  * Leyths: CCar Lua surface + physics-island opt-in for >4-wheel vehicles (https://github.com/themrdemonized/xray-monolith/pull/569)
+
+* MT:
+  * `r__hom_dynamic` is disabled by default
+  * address crash `stalker_movement_manager_base.cpp (308): stalker_movement_manager_base::setup_movement_params`, check for validity of vertices
+  * gwalls: Fix cross-object skeleton mutex deadlock in CCF_Skeleton::BuildState (https://github.com/themrdemonized/xray-monolith/pull/576)
+
 **2026.06.12**
 * Main and MT:
   * Disable shadow casting and volumetric for signal lights and hanging lamps, conflict with SSS
@@ -2246,4 +2327,3 @@ override = true
 
 * Exported distance_to_xz_sqr() function of Fvector
 * Redesigned duplicate section error, it will additionally print what file adds the section in the first place in addition to the file that has the duplicate
-
