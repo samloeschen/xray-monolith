@@ -664,8 +664,8 @@ struct CVisibleObjectPredicateEx
 
 void CVisualMemoryManager::remove_links(CObject* object)
 {
+	if (m_objects)
 	{
-		VERIFY(m_objects);
 		VISIBLES::iterator I = std::find_if(m_objects->begin(), m_objects->end(), CVisibleObjectPredicateEx(object));
 		if (I != m_objects->end())
 			m_objects->erase(I);

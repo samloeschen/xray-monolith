@@ -136,13 +136,12 @@ void CPHSimpleCharacter::UpdateDynamicDamage(dContact* c, u16 obj_material_idx, 
         __try
         {
 #endif
-            if (!obj->ObjectGetDestroy())
+            if (obj && !obj->ObjectGetDestroy())
             {
                 m_collision_damage_info.m_contact_velocity = c_vel;
                 m_collision_damage_info.m_dmc_signum = bo1 ? 1.f : -1.f;
                 m_collision_damage_info.m_dmc_type = SCollisionDamageInfo::ctObject;
                 m_collision_damage_info.m_damege_contact = *c;
-                m_collision_damage_info.m_hit_callback = obj->ObjectGetCollisionHitCallback();
                 m_collision_damage_info.m_obj_id = obj->ObjectID();
             }
 #ifdef _MSC_VER

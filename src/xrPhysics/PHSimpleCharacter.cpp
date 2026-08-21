@@ -1920,7 +1920,6 @@ void CPHSimpleCharacter::SCollisionDamageInfo::Reinit()
 	//m_damege_contact;
 
 	m_obj_id = u16(-1);
-	m_hit_callback = NULL;
 	m_contact_velocity = 0;
 	is_initiated = false;
 
@@ -1962,7 +1961,16 @@ CElevatorState* CPHSimpleCharacter::ElevatorState()
 
 ICollisionHitCallback* CPHSimpleCharacter::HitCallback() const
 {
-	return m_collision_damage_info.m_hit_callback;
+	if (m_collision_damage_info.m_dmc_type != SCollisionDamageInfo::ctObject ||
+		m_collision_damage_info.m_obj_id == u16(-1))
+		return nullptr;
+
+	CObject* obj = inl_ph_world().LevelObjects().net_Find(m_collision_damage_info.m_obj_id);
+	IPhysicsShellHolder* object = smart_cast<IPhysicsShellHolder*>(obj);
+	if (!object || object->ObjectGetDestroy())
+		return nullptr;
+
+	return object->ObjectGetCollisionHitCallback();
 }
 
 const float resolve_depth = 0.05f;
