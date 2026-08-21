@@ -1,0 +1,32 @@
+Sam's Optimization Patches
+==========================
+
+This bundle contains two required archives for the patch:
+
+  Sam-Optimization-Patches-MT-Executables.zip
+  Sam-Optimization-Patches-Shaders.zip
+
+MT executables
+--------------
+
+1. Open Sam-Optimization-Patches-MT-Executables.zip.
+2. Merge the packaged Anomaly folder with your STALKER Anomaly game folder.
+3. Allow these files under Anomaly\bin to be replaced:
+
+     AnomalyDX10.exe
+     AnomalyDX10AVX.exe
+     AnomalyDX11.exe
+     AnomalyDX11AVX.exe
+
+
+Shader mod
+----------
+
+1. Install Sam-Optimization-Patches-Shaders.zip as a normal Mod Organizer 2 mod.
+2. Enable it after Screen Space Shaders and other shader packages so these files
+   win any file conflicts.
+
+After installing or updating
+----------------------------
+
+Delete the shader cache from the Anomaly launcher before starting the game.

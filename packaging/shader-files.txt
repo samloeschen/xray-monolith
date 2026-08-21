@@ -1,0 +1,8 @@
+# Paths are relative to the repository and to the root of the shader mod.
+gamedata\shaders\r3\deffer_detail_s_flat.vs
+gamedata\shaders\r3\deffer_detail_w_flat.vs
+gamedata\shaders\r3\deffer_grass.vs
+gamedata\shaders\r3\deffer_grass_bb.vs
+gamedata\shaders\r3\details_billboard.s
+gamedata\shaders\r3\ssfx_ao.ps
+gamedata\shaders\r3\ssfx_ao_blur.ps
