@@ -10,7 +10,7 @@ Last updated: 2026-08-12
 - Shader import commit currently at HEAD: `b191452c`
 - The branch contains both local optimization families:
   - Detail-grass hardware instancing and batching
-  - SSFX render-target bandwidth reductions and GPU profiling
+  - SSFX render-target bandwidth reductions
 - The required optimization shaders are tracked under `gamedata/shaders/r3`.
 - Root scripts `build-mt.bat`, `deploy.bat`, and `publish.bat` were added after
   `b191452c` and may still be uncommitted. See `git status` before starting work.
@@ -249,26 +249,11 @@ A static viewport captures only the first dimensions passed, and legacy SSAO can
 reference resources whose creation is disabled. Fix or disable unsupported modes
 before benchmarking SSAO alternatives.
 
-### 10. GPU profiler can perturb measurements
+### 10. In-engine GPU profiler removed
 
-Confidence: confirmed API behavior
-
-References:
-
-- `src/Layers/xrRenderDX10/dx10EventWrapper.cpp:114-177`
-- `src/Layers/xrRenderDX10/dx10EventWrapper.cpp:190-207`
-
-Timestamp readback uses `GetData(..., 0)`, which can flush command submission.
-Many timestamp queries are emitted when profiling is enabled.
-
-Minimal change:
-
-- Use `D3D11_ASYNC_GETDATA_DONOTFLUSH`.
-- Poll only sufficiently old ring entries.
-- Drop an unready sample instead of stalling.
-- Add query lifecycle handling for device recreation.
-
-Never use profiler-on FPS as the final result; compare with external tooling.
+The experimental timestamp-query profiler and its `r__gpu_prof` command were
+removed during the upstream sync. Use RenderDoc, PIX, or external frame-time
+capture tooling for measurements.
 
 ## Grass Findings
 
@@ -538,8 +523,7 @@ no sort using CPU sort time, PS invocations, early-Z rejection, and detail GPU t
 - The SSFX logical render-target ping-pong model is sound for current compatible
   resource pairs and removes many full-screen copies.
 - AO blur passes 1-3 and the full IL blur chain run in the reduced corner domain.
-- The GPU profiler is off by default and uses a frame ring rather than an explicit
-  blocking wait loop.
+- RenderDoc event markers are skipped when no capture tool is listening.
 
 ## Shader Contract Notes
 

@@ -12,10 +12,6 @@
 #include "../xrRenderDX10/StateManager/dx10StateManager.h"
 #include "../xrRenderDX10/StateManager/dx10ShaderResourceStateCache.h"
 #endif	USE_DX10
-#ifdef USE_DX11
-#include "../xrRenderDX10/dx10EventWrapper.h"
-#endif
-
 void CBackend::OnFrameEnd()
 {
 	//#ifndef DEDICATED_SERVER
@@ -23,9 +19,6 @@ void CBackend::OnFrameEnd()
 	if (!g_dedicated_server)
 #endif
 	{
-#ifdef USE_DX11
-		GpuProf::OnFrameEnd();
-#endif
 #if defined(USE_DX10) || defined(USE_DX11)
 		HW.pContext->ClearState();
 		Invalidate();
@@ -58,9 +51,6 @@ void CBackend::OnFrameBegin()
 		set_RT(HW.pBaseRT);
 		set_ZB(HW.pBaseZB);
 #endif	//	USE_DX10
-#ifdef USE_DX11
-		GpuProf::OnFrameBegin();
-#endif
 		Memory.mem_fill(&stat, 0, sizeof(stat));
 		Vertex.Flush();
 		Index.Flush();
